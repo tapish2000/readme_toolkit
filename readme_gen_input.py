@@ -39,6 +39,13 @@ lines.append("The " + repo_name + " is a " + maj_lang + " repository " + purp_re
 
 # Repository description
 lines.append("## Description\n")
+is_descr_required = input("Do you wish to describe about your repository [y/n]: ").lower()
+if(is_descr_required=='y' or is_descr_required=='yes'):
+  issue_solved = input("What major issue does your project solve: ")
+  use_cases = input("What are the use cases of this project: ")
+  unique_thing1 = input("2 unique ideas in this project which is worth mentioning: \n1. ")
+  unique_thing2 = input("2. ")
+  lines.append(issue_solved + "\n\n" + use_cases + "\n\n The highlights of the repositories are:\n\n1. " + unique_thing1 +"\n2. " + unique_thing2 + "\n")
 
 # Installation
 if (write_install):
@@ -50,12 +57,24 @@ lines.append("## Usage\n")
 
 # Authors and Acknowledgment
 lines.append("## Authors and Acknowledgment\n")
+auth = input("Do you wish to tell more about the author of the project [y/n]: ").lower()
+if(auth=='y' or auth=='yes'):
+  name = input("Name of the author of this repository: ")
+  website_link = input("Link to any personal dev blog/website [optional]: ")
+  ack = input("Acknowledge people who helped you in your project")
+  lines.append("The author of this repository is " + name + ". Explore more about the author and find related things [here](" + website_link + "). This project has also been succesful due to " + ack + "\n\n")
 
 # Contributing
 lines.append("## Contributing\n")
-
+lines.append("First fork this repo then clone it into your system. Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.\n\n")
 # Basic syntax of Markdown
-
+lines.appned("\n\n")
+lines.append("<!--- # for title--->\n")
+lines.append("<!--- ## for h1--->\n")
+lines.append("<!--- 1. for numberred bullet--->\n")
+lines.append("<!--- - for bullet--->\n")
+lines.append("<!---  [name](site link) for using as hyperlink--->\n")
+lines.append("<!--- ![alt_name](link/source of image) for displaying image--->\n")
 
 readme_f.writelines(lines)
 readme_f.close()
