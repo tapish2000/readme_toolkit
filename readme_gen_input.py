@@ -53,9 +53,9 @@ is_descr_required = input("Do you wish to describe about your repository [y/n]: 
 if(is_descr_required=='y' or is_descr_required=='yes'):
   issue_solved = input("What major issue does your project solve: ")
   use_cases = input("What are the use cases of this project: ")
-  unique_thing1 = input("Two unique ideas in this project which is worth mentioning: \n1. ")
+  unique_thing1 = input("2 unique ideas in this project which is worth mentioning: \n1. ")
   unique_thing2 = input("2. ")
-  lines.append(issue_solved + "\n\n The project has been prepared keeping in mind these use cases. " + use_cases + "\n\n The highlights of the repositories are:\n\n1. " + unique_thing1 +"\n2. " + unique_thing2 + "\n")
+  lines.append(issue_solved + "\n\n" + use_cases + "\n\n The highlights of the repositories are:\n\n1. " + unique_thing1 +"\n2. " + unique_thing2 + "\n")
 
 # Installation
 if (write_install):
