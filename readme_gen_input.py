@@ -9,27 +9,38 @@ repo_name = get_repo_name(repo_link)
 maj_lang = input("What is the major language used in the repository: ")
 purp_repo = input("What is the purpose of the repository [eg: for timepass]: ")
 
-install_steps = []
-is_install_req = input("Do you want to add installation steps in the README [y/n]: ").lower()
 write_install = False
+
+install_steps = []
+usage_steps = []
+
+is_install_req = input("Do you want to add installation steps in the README [y/n]: ").lower()
+
 if (is_install_req == 'y' or is_install_req == 'yes'):
   write_install = True
+
 i = 1
-while(is_install_req == 'y' or is_install_req == 'yes'):
-  step_desc = input("Write a description for the step [Optional]: ")
-  step_command = input("Write a command associated with the step [Optional]: ")
-
-  if (step_command == ""):
-    install_steps.append(str(i) + ". " + step_desc + "\n")
-  elif (step_desc == ""):
-    install_steps.append(str(i) + ". ```\n" + step_command + "\n```\n")
+if (is_install_req == 'y' or is_install_req == 'yes'):
+  install_code = input("Write the installation of steps [type 'quit' to stop entering]:\n>> Code: ")
+  install_desc = input(">> Description of Code: ")
+  if (install_desc == ""):
+    install_steps.append(str(i) + ". \t```\n\t" + install_code + "\n\t```\n")
+  elif (install_code == ""):
+    install_steps.append(str(i) + ". " + install_desc + "\n")
   else:
-    install_steps.append(str(i) + ". " + step_desc + "\n\t```\n\t" + step_command + "\n\t```\n")
-  i += 1
-  is_install_req = input("Do you want to add more steps to the Installation in the README[y/n]: ").lower()
+    install_steps.append(str(i) + ". " + install_desc + "\n\t```\n\t" + install_code + "\n\t```\n")
+while((is_install_req == 'y' or is_install_req == 'yes') and install_code.lower() != 'quit' and install_desc.lower() != 'quit'):
+  install_code = input(">> Code: ")
+  if (install_code == 'quit'):
+    break
+  install_desc = input(">> Description of Code: ")
+  if (install_desc == ""):
+    install_steps.append(str(i) + ". \t```\n\t" + install_code + "\n\t```\n")
+  elif (install_code == ""):
+    install_steps.append(str(i) + ". " + install_desc + "\n")
+  else:
+    install_steps.append(str(i) + ". " + install_desc + "\n\t```\n\t" + install_code + "\n\t```\n")
 
-
-readme_f = open("output_readme.md", "w")
 lines = []
 
 # Repository name and tagline
@@ -53,6 +64,41 @@ if (write_install):
 
 # Usage
 lines.append("## Usage\n")
+# usage = input("Write the steps to use your project [type 'quit' to stop entering]: \n>> Description: ")
+# i = 1
+# while(usage.lower() != 'quit'):
+#   if (usage == ""):
+#     usage_steps.append(str(i) + ". ")
+#   else:
+#     usage_steps.append(str(i) + ". " + usage + "\n")
+#   i += 1
+#   usage = input(">> Code: ")
+#   if (usage.lower() == 'quit'):
+#     break
+#   usage_steps.append("\t" + "```\n\t" + usage + "\n\t```\n")
+#   usage = input(">> Description: ")
+i = 1
+usage_code = input("Write the steps to use your project [type 'quit' to stop entering]:\n>> Code: ")
+usage_desc = input(">> Description of Code: ")
+if (usage_desc == ""):
+  usage_steps.append(str(i) + ". \t```\n\t" + usage_code + "\n\t```\n")
+elif (usage_code == ""):
+  usage_steps.append(str(i) + ". " + usage_desc + "\n")
+else:
+  usage_steps.append(str(i) + ". " + usage_desc + "\n\t```\n\t" + usage_code + "\n\t```\n")
+while(usage_code.lower() != 'quit' and usage_desc.lower() != 'quit'):
+  usage_code = input(">> Code: ")
+  if (usage_code == 'quit'):
+    break
+  usage_desc = input(">> Description of Code: ")
+  if (usage_desc == ""):
+    usage_steps.append(str(i) + ". \t```\n\t" + usage_code + "\n\t```\n")
+  elif (usage_code == ""):
+    usage_steps.append(str(i) + ". " + usage_desc + "\n")
+  else:
+    usage_steps.append(str(i) + ". " + usage_desc + "\n\t```\n\t" + usage_code + "\n\t```\n")
+
+lines.extend(usage_steps)
 
 # Authors and Acknowledgment
 lines.append("## Authors and Acknowledgment\n")
@@ -74,5 +120,7 @@ lines.append("<!--- - for bullet--->\n")
 lines.append("<!---  [name](site link) for using as hyperlink--->\n")
 lines.append("<!--- ![alt_name](link/source of image) for displaying image--->\n")
 
+
+readme_f = open("output_readme.md", "w")
 readme_f.writelines(lines)
 readme_f.close()
