@@ -48,14 +48,28 @@ lines.append("# " + repo_name + "\n")
 lines.append("The " + repo_name + " is a " + maj_lang + " repository " + purp_repo + ".\n\n")
 
 # Repository description
-lines.append("## Description\n")
 is_descr_required = input("Do you wish to describe about your repository [y/n]: ").lower()
 if(is_descr_required=='y' or is_descr_required=='yes'):
+  lines.append("## Description\n")
   issue_solved = input("What major issue does your project solve: ")
-  use_cases = input("What are the use cases of this project: ")
-  unique_thing1 = input("Two unique ideas in this project which is worth mentioning: \n1. ")
-  unique_thing2 = input("2. ")
-  lines.append(issue_solved + "\n\n The project has been prepared keeping in mind these use cases. " + use_cases + "\n\n The highlights of the repositories are:\n\n1. " + unique_thing1 +"\n2. " + unique_thing2 + "\n")
+  use_cases = ["\n\n The project has been prepared keeping in mind these use cases:\n"]
+  use_case = input("What are the use cases of this project [type \"quit\" to stop entering or keep writing ]: \n1. ")
+  i = 1
+  while(use_case != "quit"):
+    use_cases.append("\n"+str(i)+". "+use_case)
+    i = i+1
+    use_case = input(str(i) + ". ")
+  unique_things =["\n\n The highlights of the repositories are:\n"]
+  unique_thing = input("Unique ideas in this project which is worth mentioning [type \"quit\" to stop entering or keep writing ]: \n1.  ")
+  i = 1
+  while(unique_thing != "quit"):
+    unique_things.append("\n"+str(i)+". "+unique_thing)
+    i = i+1
+    unique_thing = input(str(i) + ". ")
+  lines.append(issue_solved) 
+  lines.extend(use_cases)
+  lines.extend(unique_things)
+  lines.append("\n")
 
 # Installation
 if (write_install):
@@ -102,12 +116,22 @@ lines.extend(usage_steps)
 
 # Authors and Acknowledgment
 lines.append("## Authors and Acknowledgment\n")
-auth = input("Do you wish to tell more about the author of the project [y/n]: ").lower()
-if(auth=='y' or auth=='yes'):
-  name = input("Name of the author of this repository: ")
-  website_link = input("Link to any personal dev blog/website [optional]: ")
-  ack = input("Acknowledge people who helped you in your project: ")
-  lines.append("The author of this repository is " + name + ". Explore more about the author and find related things [here](" + website_link + "). This project has also been succesful due to " + ack + "\n\n")
+name = input("Name of the author of this repository: ")
+website_link = input("Link to any personal dev blog/website [optional]: ")
+acks = ["This project has also been possible due to contribution of these people: "]
+ack = input("Acknowledge people who helped you in your project [type \"quit\" to stop entering or keep writing ]: \n1. [Name, Blog page/site link]: ")
+i = 1
+while(ack != "quit"):
+  temp = ack.split(',')
+  if(len(temp)==1):
+    acks.append("\n"+str(i)+". "+ack)
+  else:
+    acks.append("\n"+str(i)+". ["+temp[0]+"]("+temp[-1].strip()+")")
+  i = i+1
+  ack = input(str(i) + ". [Name, Blog page/site link]: ")
+lines.append("The author of this repository is " + name + ". Explore more about the author and find related things [here](" + website_link + "). ")
+lines.extend(acks)
+lines.append("\n")
 
 # Contributing
 lines.append("## Contributing\n")
