@@ -116,12 +116,22 @@ lines.extend(usage_steps)
 
 # Authors and Acknowledgment
 lines.append("## Authors and Acknowledgment\n")
-auth = input("Do you wish to tell more about the author of the project [y/n]: ").lower()
-if(auth=='y' or auth=='yes'):
-  name = input("Name of the author of this repository: ")
-  website_link = input("Link to any personal dev blog/website [optional]: ")
-  ack = input("Acknowledge people who helped you in your project: ")
-  lines.append("The author of this repository is " + name + ". Explore more about the author and find related things [here](" + website_link + "). This project has also been succesful due to " + ack + "\n\n")
+name = input("Name of the author of this repository: ")
+website_link = input("Link to any personal dev blog/website [optional]: ")
+acks = ["This project has also been possible due to contribution of these people: "]
+ack = input("Acknowledge people who helped you in your project [type \"quit\" to stop entering or keep writing ]: \n1. [Name, Blog page/site link]: ")
+i = 1
+while(ack != "quit"):
+  temp = ack.split(',')
+  if(len(temp)==1):
+    acks.append("\n"+str(i)+". "+ack)
+  else:
+    acks.append("\n"+str(i)+". ["+temp[0]+"]("+temp[-1].strip()+")")
+  i = i+1
+  ack = input(str(i) + ". [Name, Blog page/site link]: ")
+lines.append("The author of this repository is " + name + ". Explore more about the author and find related things [here](" + website_link + "). ")
+lines.extend(acks)
+lines.append("\n")
 
 # Contributing
 lines.append("## Contributing\n")
