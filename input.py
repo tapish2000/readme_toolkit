@@ -1,11 +1,5 @@
-def get_repo_name(repo_link):
-  temp = repo_link.split('/')
-  return temp[-1]
-
-
-
 repo_link = input("Enter the Repository Link: ")
-repo_name = get_repo_name(repo_link)
+repo_name = repo_link.split('/')[-1]
 maj_lang = input("What is the major language used in the repository: ")
 purp_repo = input("What is the purpose of the repository [eg: for timepass]: ")
 
@@ -78,19 +72,6 @@ if (write_install):
 
 # Usage
 lines.append("## Usage\n")
-# usage = input("Write the steps to use your project [type 'quit' to stop entering]: \n>> Description: ")
-# i = 1
-# while(usage.lower() != 'quit'):
-#   if (usage == ""):
-#     usage_steps.append(str(i) + ". ")
-#   else:
-#     usage_steps.append(str(i) + ". " + usage + "\n")
-#   i += 1
-#   usage = input(">> Code: ")
-#   if (usage.lower() == 'quit'):
-#     break
-#   usage_steps.append("\t" + "```\n\t" + usage + "\n\t```\n")
-#   usage = input(">> Description: ")
 i = 1
 usage_code = input("Write the steps to use your project [type 'quit' to stop entering]:\n>> Code: ")
 usage_desc = input(">> Description of Code: ")
@@ -116,7 +97,7 @@ lines.extend(usage_steps)
 
 # Authors and Acknowledgment
 lines.append("## Authors and Acknowledgment\n")
-name = input("Name of the author of this repository: ")
+name = repo_link.split('/')[-2]
 website_link = input("Link to any personal dev blog/website [optional]: ")
 acks = ["This project has also been possible due to contribution of these people: "]
 ack = input("Acknowledge people who helped you in your project [type \"quit\" to stop entering or keep writing ]: \n1. [Name, Blog page/site link]: ")
