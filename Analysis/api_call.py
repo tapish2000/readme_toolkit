@@ -1,56 +1,53 @@
-# import requests
-# import json
-
-# ####
-# # inputs
-# ####
-# username = 'shobhi1310'
-
-# # from https://github.com/user/settings/tokens
-# token = 'e539a459bed4433e1cf69ba404b1ebfa68642ab7'
-
-# repos_url = 'https://api.github.com/repos/tapish2000/medconnect-web/dependencies'
-
-# # create a re-usable session object with the user creds in-built
-# gh_session = requests.Session()
-# gh_session.auth = (username, token)
-
-# # get the list of repos belonging to me
-# repos = json.loads(gh_session.get(repos_url).text)
-
-# # print the repo names
-# f = open("Dump.json",'w')
-# f.write(str(repos))
-# f.close()
-    
-# # make more requests using "gh_session" to create repos, list issues, etc.
-
 import requests
-from bs4 import BeautifulSoup
+import json
 
-repo = "expressjs/express"
-page_num = 1
-url = 'https://github.com/tapish2000/medconnect-web/network/dependencies'.format(repo)
+####
+# inputs
+####
+username = 'tapish2000'
 
-print("GET " + url)
-r = requests.get(url)
-soup = BeautifulSoup(r.content, "html.parser")
+# from https://github.com/user/settings/tokens
+token = '90499a48fe97d702d4c9a35dc62c9a9cff26c555'
 
-data = [
-    "{}/{}".format(
-        t.find('a', {"data-repository-hovercards-enabled":""}).text,
-        t.find('a', {"data-hovercard-type":"repository"}).text
-    )
-    for t in soup.findAll("div", {"class": "Box-row"})
-]
-f = open("./Dependency.txt",'w')
-for i in range(len(data)):
-    data[i] = data[i][7:-1].strip()
-    f.write(data[i][data[i].find("/")+1:].strip()+'\n')
-f.close()
-print(data)
-    # paginationContainer = soup.find("button", {"class":"ajax-pagination-btn"}).find('a')
-    # if paginationContainer:
-    #     url = paginationContainer["href"]
-    # else:
-    #     break
+repo = 'dst-custom-compiler'
+
+headers = {
+    "Accept": "application/vnd.github.v3+json",
+    "Authorization": "token {}".format(token)
+}
+
+url_lang = 'https://api.github.com/repos/{}/{}/languages'.format(username, repo)
+# url_contrib = 'https://api.github.com/repos/{}/{}/contributors'.format(username, repo)
+url_collab_usernames = 'https://api.github.com/repos/{}/{}/contributors'.format(username, repo)
+url_comm_prof = 'https://api.github.com/repos/{}/{}/community/profile'.format(username, repo)
+url_release = 'https://api.github.com/repos/{}/{}/releases'.format(username, repo)
+
+out_lang = json.loads(requests.get(url_lang, headers = headers).text)
+# out_contrib = json.loads(requests.get(url_contrib, headers = headers).text)
+out_collab_usernames = json.loads(requests.get(url_collab_usernames, headers = headers).text)
+out_comm_prof = json.loads(requests.get(url_comm_prof, headers = headers).text)
+out_release = json.loads(requests.get(url_release, headers = headers).text)
+
+# manipulation of outputs
+out_lang = [o for o in out_lang.keys()]
+# out_contrib = [o['login'] for o in out_contrib]
+out_collab_usernames = [o['login'] for o in out_collab_usernames]
+
+
+out_collab = []
+for each in out_collab_usernames:
+    url_collab = 'https://api.github.com/users/{}'.format(each)
+    out = json.loads(requests.get(url_collab, headers = headers).text)
+    out_collab.append(out['name'])
+
+
+# print the repo names
+data = {}
+data["language"] = out_lang
+# data["contributors"] = out_contrib
+data["collaborators"] = out_collab
+data["community-profile"] = out_comm_prof
+data["releases"] = out_release
+
+with open('data.json', 'w') as outfile:
+    json.dump(data, outfile)
