@@ -27,17 +27,23 @@ class CallCollector(ast.NodeVisitor):
             self._in_call = False
         self.generic_visit(node)
 
-f = open("./input.py",'r')
+f = open("Analysis/parse.py",'r')
+f2 = open("Analysis/inbuilt_functions.txt",'r')
 tree = ast.parse(f.read())
 cc = CallCollector()
 cc.visit(tree)
 l = cc.calls
-l = set(l)
-builtin_function_names = [name for name, obj in vars(builtins).items() 
-                          if isinstance(obj, types.BuiltinFunctionType)]
-# ans = []
-# for name in l:
-#     if(name not in builtin_function_names):
-#         ans.append(name)
-print(builtin_function_names)
+dictionary = {i:l.count(i) for i in set(l)}
+builtin_function_names = []
+
+for line in f2.readlines():
+    builtin_function_names.append(line[:-1])
+# print(builtin_function_names)
+
+for key in dictionary.copy():
+    if(key[key.rfind('.')+1:] in builtin_function_names or key in builtin_function_names):
+        del dictionary[key]
+# print(builtin_function_names)
 # print(builtins.dict_keys())
+dictionary = dict(sorted(dictionary.items(), key=lambda item: -item[1]))
+print(dictionary)
