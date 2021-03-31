@@ -14,12 +14,12 @@ if (is_install_req == 'y' or is_install_req == 'yes'):
     write_install = True
 
 i = 1
-if (is_install_req == 'y' or is_install_req == 'yes'):
+if is_install_req == 'y' or is_install_req == 'yes':
     install_code = input("Write the installation of steps [type 'quit' to stop entering]:\n>> Code: ")
     install_desc = input(">> Description of Code: ")
-    if (install_desc == ""):
+    if install_desc == "":
         install_steps.append(str(i) + ". \t```\n\t" + install_code + "\n\t```\n")
-    elif (install_code == ""):
+    elif install_code == "":
         install_steps.append(str(i) + ". " + install_desc + "\n")
     else:
         install_steps.append(str(i) + ". " + install_desc + "\n\t```\n\t" + install_code + "\n\t```\n")
@@ -43,20 +43,20 @@ lines.append("The " + repo_name + " is a " + maj_lang + " repository " + purp_re
 
 # Repository description
 is_descr_required = input("Do you wish to describe about your repository [y/n]: ").lower()
-if(is_descr_required=='y' or is_descr_required=='yes'):
+if is_descr_required=='y' or is_descr_required=='yes':
     lines.append("## Description\n")
     issue_solved = input("What major issue does your project solve: ")
     use_cases = ["\n\n The project has been prepared keeping in mind these use cases:\n"]
     use_case = input("What are the use cases of this project [type \"quit\" to stop entering or keep writing ]: \n1. ")
     i = 1
-    while(use_case != "quit"):
+    while use_case != "quit":
         use_cases.append("\n"+str(i)+". "+use_case)
         i = i+1
         use_case = input(str(i) + ". ")
     unique_things =["\n\n The highlights of the repositories are:\n"]
     unique_thing = input("Unique ideas in this project which is worth mentioning [type \"quit\" to stop entering or keep writing ]: \n1.  ")
     i = 1
-    while(unique_thing != "quit"):
+    while unique_thing != "quit":
         unique_things.append("\n"+str(i)+". "+unique_thing)
         i = i+1
         unique_thing = input(str(i) + ". ")
@@ -66,7 +66,7 @@ if(is_descr_required=='y' or is_descr_required=='yes'):
     lines.append("\n")
 
 # Installation
-if (write_install):
+if write_install:
     lines.append("## Installation\n")
     lines.extend(install_steps)
 
@@ -75,9 +75,9 @@ lines.append("## Usage\n")
 i = 1
 usage_code = input("Write the steps to use your project [type 'quit' to stop entering]:\n>> Code: ")
 usage_desc = input(">> Description of Code: ")
-if (usage_desc == ""):
+if usage_desc == "":
     usage_steps.append(str(i) + ". \t```\n\t" + usage_code + "\n\t```\n")
-elif (usage_code == ""):
+elif usage_code == "":
     usage_steps.append(str(i) + ". " + usage_desc + "\n")
 else:
     usage_steps.append(str(i) + ". " + usage_desc + "\n\t```\n\t" + usage_code + "\n\t```\n")
