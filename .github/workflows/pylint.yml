@@ -21,4 +21,4 @@ jobs:
         pip install bs4
     - name: Analysing the code with pylint
       run: |
-        pylint `ls -R|grep .py$|xargs`
+        pylint ignore-long-lines `ls -R|grep .py$|xargs`
