@@ -1,0 +1,33 @@
+{% extends "readme_form/base.html" %}
+{% block content %}
+    <h2>Installation Steps</h2>
+    <div class="row">
+        <div class="col-sm-8">
+            <form>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description for the code</label>
+                    <input type="text" class="form-control" id="description">
+                </div>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Code</label>
+                    <input class="form-control" placeholder=">> installation step" id="code">
+                </div>
+                <div class="mb-3">
+                    <label for="moresteps" class="form-label">Do you want to add more steps to the installation process:</label>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <a class="btn btn-primary" href="{% url 'readme-installation' %}">Yes</a>
+                        </div>
+                        <div class="col-sm-2">
+                            <a class="btn btn-primary" href="{% url 'readme-usage' %}">No</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-4">
+            <h3>Usage Preview</h3>
+            <textarea></textarea>
+        </div>
+    </div>
+{% endblock content %}
