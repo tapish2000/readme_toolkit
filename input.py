@@ -1,5 +1,3 @@
-import json
-
 repo_link = input("Enter the Repository Link: ")
 repo_name = repo_link.split('/')[-1]
 maj_lang = input("What is the major language used in the repository: ")
@@ -131,10 +129,3 @@ lines.append("<!--- ![alt_name](link/source of image) for displaying image--->\n
 readme_f = open("output_readme.md", "w")
 readme_f.writelines(lines)
 readme_f.close()
-
-data = {}
-data['user'] = name
-data['repo_name'] = repo_name
-
-with open('repo_details.json','w') as outfile:
-  json.dump(data,outfile,indent=4,separators=(',',':'))
