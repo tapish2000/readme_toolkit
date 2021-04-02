@@ -2,12 +2,19 @@
 
 import requests
 from bs4 import BeautifulSoup
+# import json
+# data = {}
+# with open("repo_details.json",'r') as outfile:
+#     data = json.load(outfile)
+
+# username = data['user']
+# repo_name = data['repo_name']
 
 repo = "expressjs/express"
 page_num = 1
-url = 'https://github.com/tapish2000/medconnect-web/network/dependencies'.format(repo)
+url = 'https://github.com/shobhi1310/medcon_server/network/dependencies'
 
-print("GET " + url)
+# print("GET " + url)
 r = requests.get(url)
 soup = BeautifulSoup(r.content, "html.parser")
 
@@ -23,7 +30,7 @@ for i in range(len(data)):
     data[i] = data[i][7:-1].strip()
     f.write(data[i][data[i].find("/")+1:].strip()+'\n')
 f.close()
-print(data)
+# print(data)
     # paginationContainer = soup.find("button", {"class":"ajax-pagination-btn"}).find('a')
     # if paginationContainer:
     #     url = paginationContainer["href"]

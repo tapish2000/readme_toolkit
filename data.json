@@ -1,0 +1,30 @@
+{
+    "language":[
+        "JavaScript",
+        "Shell"
+    ],
+    "collaborators":[
+        "Shubhankar Bhadra",
+        null,
+        "Mir Sameed Ali",
+        "Tapish Ojha"
+    ],
+    "community-profile":{
+        "health_percentage":33,
+        "description":"For hosting the server",
+        "documentation":null,
+        "files":{
+            "code_of_conduct":null,
+            "contributing":null,
+            "issue_template":null,
+            "pull_request_template":null,
+            "license":null,
+            "readme":{
+                "url":"https://api.github.com/repos/shobhi1310/medcon_server/contents/README.md",
+                "html_url":"https://github.com/shobhi1310/medcon_server/blob/master/README.md"
+            }
+        },
+        "updated_at":"2020-09-06T07:37:51Z"
+    },
+    "releases":[]
+}
