@@ -2,7 +2,7 @@
 The readme-toolkit is a Python repository for generating a readme of a repository.
 
 ## Description
-There is always a tension among the users for writing a flawless readme and it is also very cumbersome to do the documentation in the last moment.
+There is always a tension among the users for writing a flawless readme and it is also very cumbersome to do the documentation in the last moment. This repository has also been made using the this toolkit itself.
 
  The project has been prepared keeping in mind these use cases:
 
@@ -13,25 +13,30 @@ There is always a tension among the users for writing a flawless readme and it i
  The highlights of the repositories are:
 
 1. AST is used for finding out the most frequently used custom function
-2. Dependency is listed for some supported languages
+2. Dependency is listed for some supported languages (javascript as of now)
 3. Neat framing of readme is provided as an output
 ## Installation
 1. for cloning the repository
 	```
 	git clone https://github.com/tapish2000/readme-toolkit.git
 	```
-1. 	```
+2. 	```
 	cd readme-toolkit
 	```
-1. For executing the CLI
-	```
-	python3 input.py
-	```
+
 ## Usage
-1. In the executing directory, type this command for invoking the interactive CLI.
+1. Have `beautiful-soup` and `request` installed in your system using `pip`
+2. In the executing directory, type this command for invoking the interactive CLI.
 	```
-	python3 input.py
+	make
 	```
+## Output
+- output_readme.md
+- dependency.txt
+- data.json
+
+As of now the meta-data is not linked into the output readme and will be integrated in release 2.0, though they are collected and stored.
+
 ## Authors and Acknowledgment
 The author of this repository is Tapish Ojha. Explore more about the author and find related things [here](https://github.com/tapish2000). This project has also been possible due to contribution of these people: 
 1. [Shubhankar Bhadra](https://github.com/shobhi1310)
