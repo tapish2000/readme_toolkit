@@ -3,20 +3,20 @@
     <h2>Usage Steps</h2>
     <div class="row">
         <div class="col-sm-8">
-            <form>
+            <form method="POST" action=".">{% csrf_token %}
                 <div class="mb-3">
                     <label for="description" class="form-label">Description for the code</label>
-                    <input type="text" class="form-control" id="description">
+                    <input type="text" class="form-control" placeholder="Explain what this code snippet does..." name="description">
                 </div>
                 <div class="mb-3">
                     <label for="code" class="form-label">Code</label>
-                    <input class="form-control" placeholder=">> installation step" id="code">
+                    <input class="form-control" placeholder=">> Usage step" name="code">
                 </div>
                 <div class="mb-3">
                     <label for="moresteps" class="form-label">Do you want to add more steps to the usage process:</label>
                     <div class="row">
                         <div class="col-sm-2">
-                            <a class="btn btn-primary" href="{% url 'readme-usage' %}">Yes</a>
+                            <button type="submit" class="btn btn-primary">Yes</button>
                         </div>
                         <div class="col-sm-2">
                             <a class="btn btn-primary">No</a>
@@ -26,8 +26,17 @@
             </form>
         </div>
         <div class="col-sm-4">
-            <h3>Usage Preview</h3>
-            <textarea></textarea>
+            <div class="card" style="text-align: center;margin-left: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title">Preview</h5>
+                    {% for step in usage_steps %}
+                    {% for key,value in step.items %}
+                    <p>{{ value }}</p>
+                    {% endfor %}
+                    <hr>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-    </div>
+</div>
 {% endblock content %}
