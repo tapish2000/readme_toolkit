@@ -1,0 +1,66 @@
+{% extends "readme_form/base.html" %}
+{% block content %}
+
+    <h2 style="text-align: center">Output</h2>
+    <div class="row">
+        <div class="alert alert-info" role="alert">
+            <h3>Analysis Report</h3>
+            {% for each in profile %}
+                <p>{{ each }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" style="text-align: left">
+            <a href="output_README.md" download>
+                <button class="btn btn-primary"> Download </button>
+            </a>
+        </div>
+        <div class="col-sm-6" style="text-align: right">
+            <input type="radio" class="btn-check" name="output-options" id="raw-output" onclick="toggle(0)" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="raw-output">Raw Format</label>
+
+            <input type="radio" class="btn-check" name="output-options" id="html-output" onclick="toggle(1)" autocomplete="off">
+            <label class="btn btn-outline-info" for="html-output">Markdown Format</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card raw">
+            <div class="card-body">
+                {% for line in raw_output %}
+                    {% if line %}
+                        <p>{{ line }}</p>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card html" style="display: none">
+            <div class="card-body">
+                {% for line in html_output %}
+                    {% if line %}
+                        {{ line|safe }}
+                        <br>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggle(option) {
+            if (option == 1) {
+                document.getElementsByClassName('raw')[0].style.display = 'none';
+                document.getElementsByClassName('html')[0].style.display = 'block';
+            }
+            else {
+                document.getElementsByClassName('raw')[0].style.display = 'block';
+                document.getElementsByClassName('html')[0].style.display = 'none';
+            }
+        }
+    </script>
+
+{% endblock content %}

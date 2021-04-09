@@ -13,14 +13,38 @@
                     <input class="form-control" placeholder=">> Usage step" name="code">
                 </div>
                 <div class="mb-3">
-                    <label for="moresteps" class="form-label">Do you want to add more steps to the usage process:</label>
                     <div class="row">
                         <div class="col-sm-2">
-                            <button type="submit" class="btn btn-primary">Yes</button>
+                            <button type="submit" class="btn btn-primary">Add Step</button>
                         </div>
                         <div class="col-sm-2">
-                            <a class="btn btn-primary">No</a>
+                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verification">Finish</a>
                         </div>
+                    </div>
+                    <div class="row">
+                        <label style="color: grey">Write the steps to be added in the above fields and click <strong>Add Step</strong> to add the step.</label>
+                    </div>
+                    <div class="row">
+                        <label style="color: grey">Click <strong>Finish</strong> to move to the output page.</label>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="verification" tabindex="-1" aria-labelledby="verificationLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="verificationLabel">Verification</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to Finish?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            <a type="button" class="btn btn-primary" href="{% url 'readme-output' %}">Yes</a>
+                        </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </form>
