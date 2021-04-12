@@ -13,14 +13,27 @@
                     <input class="form-control" placeholder=">> installation step" name="code">
                 </div>
                 <div class="mb-3">
-                    <label for="moresteps" class="form-label">Do you want to add more steps to the installation process:</label>
                     <div class="row">
                         <div class="col-sm-2">
-                            <button type="submit" class="btn btn-primary">Yes</button>
+                            <button type="submit" class="btn btn-primary">Add Step</button>
+                            <button class="btn btn-primary" id="add-clicked" type="button" disabled style="display: none">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Adding...
+                            </button>
                         </div>
                         <div class="col-sm-2">
-                            <a class="btn btn-primary" href="{% url 'readme-usage' %}">No</a>
+                            <a class="btn btn-primary" href="{% url 'readme-usage' %}">Next</a>
+                            <button class="btn btn-primary" id="next-clicked" type="button" disabled style="display: none">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
                         </div>
+                    </div>
+                    <div class="row">
+                        <label style="color: grey">Write the steps to be added in the above fields and click <strong>Add Step</strong> to add the step.</label>
+                    </div>
+                    <div class="row">
+                        <label style="color: grey">Click <strong>Next</strong> to move to the next page.</label>
                     </div>
                 </div>
             </form>

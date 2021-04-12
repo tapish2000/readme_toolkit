@@ -1,9 +1,9 @@
 {% extends "readme_form/base.html" %}
 {% block content %}
-    <form method="POST" action=".">{% csrf_token %}
+    <form class="basic-info" method="POST" action=".">{% csrf_token %}
         <div class="mb-3">
-            <label for="repoLink" class="form-label">GitHub Repository Link</label>
-            <input type="url" class="form-control" name="repoLink">
+            <label for="repo-link" class="form-label">GitHub Repository Link</label>
+            <input type="url" class="form-control" name="repo-link" required>
         </div>
         <div class="mb-3">
             <label for="purpose" class="form-label">Purpose of the Project</label>
@@ -54,6 +54,21 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Next</button>
+        <button type="submit" class="btn btn-primary" id="next-normal" onclick="loading()">Next</button>
+        <button class="btn btn-primary" id="next-clicked" type="button" disabled style="display: none">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...
+        </button>
     </form>
+
+    <script>
+        function loading() {
+            var form = document.getElementsByClassName('basic-info');
+            console.log(form[0].checkValidity());
+            if (form[0].checkValidity() == true) {
+                document.getElementById('next-normal').style.display = 'none';
+                document.getElementById('next-clicked').style.display = 'block';
+            }
+        }
+    </script>
 {% endblock content %}

@@ -27,6 +27,7 @@ class CallCollector(ast.NodeVisitor):
             self._in_call = False
         self.generic_visit(node)
 
+
 f = open("Analysis/parse.py",'r')
 f2 = open("Analysis/inbuilt_functions.txt",'r')
 tree = ast.parse(f.read())
