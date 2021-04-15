@@ -70,8 +70,63 @@ def parse_loc(readme):
     
     return loc
 
-# def evaluate_sections(sections, readme): 
+def evaluate_sections(sections): 
+    score = 0
+    description = ['description','about']
+    installation = ['installation','install','getting started']
+    usage = ['usage','use','how to use']
+    contributing = ['contributing','contribute']
+    author = ['author','authors','special thanks','acknowledgement','acknowledgements','collaborators','owners']
+    dependency = ['dependency','library','libraries','dependencies']
+    licence = ['licence']
+
+    count = 0
+    for d in description:
+        if d in sections:
+            # print(d)
+            count += 1
+            score += 16
+            break
+    for i in installation:
+        if i in sections:
+            # print(i)
+            count += 1
+            score += 16
+            break
+    for u in usage:
+        if u in sections:
+            # print(u)
+            count += 1
+            score += 16
+            break
+    for c in contributing:
+        if c in sections:
+            # print(c)
+            count += 1
+            score += 8
+            break
+    for a in author:
+        if a in sections:
+            # print(a)
+            count += 1
+            score += 12
+            break
+    for d in dependency:
+        if d in sections:
+            # print(d)
+            count += 1
+            score += 14
+            break
+    for l in licence:
+        if l in sections:
+            # print(l)
+            count += 1
+            score += 1
+            break
+    if len(sections)>count:
+        score += min(9,(len(sections)-count))
     
+    return score
 
 def parse_urls(readme):
     urls = re.findall(r'\[[^][]+]\((https?://[^()]+)\)', readme)
@@ -92,8 +147,8 @@ def parse_sections(readme):
 
     for line in readme:
         if line[0] == '#':
-            sections.append(' '.join(line.split(' ')[1:]))
-
+            sections.append(' '.join(line.split(' ')[1:]).lower())
+    
     return sections
 
 
@@ -133,9 +188,9 @@ def score_generator(repo_link):
     urls = parse_urls(readme)
     loc = parse_loc(readme)
 
-    # evaluate_sections(sections)
-
-
+    section_score = evaluate_sections(sections)
+    score = section_score + min((images * 0.25), 5) + min((urls * 0.125), 3) + min((loc * 0.2), 5)
+    print(score)
     '''
     Score sheet:
     sections:
@@ -149,11 +204,11 @@ def score_generator(repo_link):
         license: 1
         Others: 9
     images:
-        max((images * 0.25), 5)
+        min((images * 0.25), 5)
     urls:
-        max((urls * 0.125), 3)
+        min((urls * 0.125), 3)
     loc:
-        max((loc * 0.2), 5)
+        min((loc * 0.2), 5)
     '''
 
 
