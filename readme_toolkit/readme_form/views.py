@@ -25,24 +25,49 @@ genres = [
 
 def home(request):
     context = {
+        "readme_present" : False,
+        "error" : False
+    }
+    if request.method == "POST":
+        global details
+        details = {
+            'repo-link' : request.POST.get('repo-link')
+        }
+
+        try:
+            details['meta-data'] = api_call(details['repo-link'])
+        except:
+            print("Unable to access github API")
+            context['error'] = True
+            return render(request, 'readme_form/home.html', context)
+
+        if details['meta-data']['community-profile']['files']['readme']:
+            context['readme_present'] = True
+            context['score'] = score_generator(details['repo-link'])
+            profile = customize_profile(details['meta-data']['community-profile'])
+            context['profile'] = profile
+            context['repo_link'] = details['repo-link']
+            return render(request, 'readme_form/home.html', context)
+        return redirect('detail/') 
+    return render(request, 'readme_form/home.html', context)
+
+def detail(request):
+    context = {
         "usecases" : usecases,
         "genres" : genres
     }
     if request.method == "POST":
         global details
-        details = {
-            'repo-link' : request.POST.get('repo-link'),
-            'purpose' : request.POST.get('purpose'),
-            'license-name' : request.POST.get('license-name'),
-            'license-url' : request.POST.get('license-url'),
-            'usecase' : request.POST.getlist('usecase[]'),
-            'genre' : request.POST.getlist('genre[]')
-        }
+        details['purpose'] = request.POST.get('purpose')
+        details['license-name'] = request.POST.get('license-name')
+        details['license-url'] = request.POST.get('license-url')
+        details['usecase'] = request.POST.getlist('usecase[]')
+        details['genre'] = request.POST.getlist('genre[]')
 
-        details['meta-data'] = api_call(details['repo-link'])
+        print('\n\nDetails: ' + str(details))
 
-        return redirect('installation/') 
-    return render(request, 'readme_form/home.html', context)
+        return redirect('installation/')
+    return render(request, 'readme_form/detail.html', context)
 
 def installation(request):
     if request.method=="POST":
@@ -50,16 +75,17 @@ def installation(request):
         code = request.POST.get('code')
         if description != None and code != None:
             install_steps.append({'description': description,'code': code})
-    return render(request, 'readme_form/installation.html',{'install_steps': install_steps})
+    return render(request, 'readme_form/installation.html', {'install_steps': install_steps})
 
 def usage(request):
     if request.method=="POST":
         description = request.POST.get('description')
         code = request.POST.get('code')
         usage_steps.append({'description':description,'code':code})
-    return render(request, 'readme_form/usage.html',{'usage_steps': usage_steps})
+    return render(request, 'readme_form/usage.html', {'usage_steps': usage_steps})
 
 def output(request):
+    print(details)
     raw_output, html_output = integrate(details, install_steps, usage_steps)
     profile = customize_profile(details['meta-data']['community-profile'])
     context = {

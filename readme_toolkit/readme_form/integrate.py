@@ -176,12 +176,11 @@ def customize_profile(profile):
     
     # Health Percentage
     new_profile.append("Health Percentage: " + str(profile['health_percentage']))
-    print(profile['files'])
+    # print(profile['files'])
     for key, value in profile['files'].items():
-        if key != 'readme':
-            if value:
-                new_profile.append(key.replace('_', ' ') + ' : Present')
-            else:
-                new_profile.append(key.replace('_', ' ') + ' : Not Present')
+        if value:
+            new_profile.append(key.replace('_', ' ') + ' : Present')
+        else:
+            new_profile.append(key.replace('_', ' ') + ' : Not Present')
     
     return new_profile

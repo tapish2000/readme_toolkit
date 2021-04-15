@@ -1,0 +1,70 @@
+{% extends "readme_form/base.html" %}
+{% block content %}
+    <form class="basic-info" method="POST" action=".">{% csrf_token %}
+        <div class="mb-3">
+            <label for="purpose" class="form-label">Purpose of the Project</label>
+            <input type="text" class="form-control" name="purpose" required
+            placeholder="Write a complete meaningful sentence...">
+        </div>
+        <div class="mb-3">
+            <label for="audience" class="form-label">Target Audience</label>  
+            {% for list in usecases %}
+                <div class="row">
+                    {% for usecase in list %}
+                        <div class="mb-3 form-check col-sm-4">
+                            <input type="checkbox" class="form-check-input" value="{{usecase}}" id="usecase{{forloop.counter}}{{forloop.parentloop.counter}}" name="usecase[]">
+                            <label class="form-check-label" for="usecase{{forloop.counter}}{{forloop.parentloop.counter}}">{{usecase}}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="genres" class="form-label">Genre of your Project</label>  
+            {% for list in genres %}
+                <div class="row">
+                    {% for genre in list %}
+                        <div class="mb-3 form-check col-sm-4">
+                            <input type="checkbox" class="form-check-input" value="{{genre}}" id="genre{{forloop.counter}}{{forloop.parentloop.counter}}" name="genre[]">
+                            <label class="form-check-label" for="genre{{forloop.counter}}{{forloop.parentloop.counter}}">{{genre}}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="license" class="form-label">License Details</label>
+            <div class="row">
+                <div class="col-sm-1">
+                    <label for="license-name" class="form-label">Name</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="license-name">
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-1">
+                    <label for="license-url" class="form-label">URL</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="url" class="form-control" name="license-url">
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="next-normal" onclick="loading()">Next</button>
+        <button class="btn btn-primary" id="next-clicked" type="button" disabled style="display: none">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Loading...
+        </button>
+    </form>
+
+    <script>
+        function loading() {
+            var form = document.getElementsByClassName('basic-info');
+            console.log(form[0].checkValidity());
+            if (form[0].checkValidity() == true) {
+                document.getElementById('next-normal').style.display = 'none';
+                document.getElementById('next-clicked').style.display = 'block';
+            }
+        }
+    </script>
+{% endblock content %}

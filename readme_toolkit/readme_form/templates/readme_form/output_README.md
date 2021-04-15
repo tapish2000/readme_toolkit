@@ -1,19 +1,15 @@
-# medconnect-web
-The medconnect-web is a JavaScript repository.
+# dst-custom-compiler
+The dst-custom-compiler is a Yacc repository.
 
 ## Description
 The major purpose of this project is to make non commercial web and android app taking care of a good health and well being of people under Software Development Goals  
 
 The project is based on the following genres: 
-* Frontend Development
-* Backend Development
-* Mobile App Development
-* Database
-* Software
+- Frontend Development
+- Mobile App Development
 
 This project is useful in the following domains: 
 * Businesses Domain
-* Social Welfare Domain
 * Health Domain
 
 ## Installation Steps
@@ -27,7 +23,7 @@ This project is useful in the following domains:
 
 ## Authors and Acknowledgement
 The following are the collaborators of the project:  
-- [Mir Sameed Ali](https://github.com/mir-sam-ali)  
+- [Shubhankar Bhadra](https://github.com/shobhi1310)  
 - [Tapish Ojha](https://github.com/tapish2000)  
 
 ## Contributing
