@@ -1,6 +1,9 @@
 .vscode
 readme_data.txt
+readme
 output_readme.md
 venv
 config.json
 Analysis/__pycache__
+readme_toolkit/readme_form/__pycache__
+readme_toolkit/readme_toolkit/__pycache__
