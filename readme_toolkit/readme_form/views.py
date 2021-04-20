@@ -37,13 +37,14 @@ def home(request):
         try:
             details['meta-data'] = api_call(details['repo-link'])
         except:
-            print("Unable to access github API")
+            print("ERROR: Unable to access github API")
             context['error'] = True
             return render(request, 'readme_form/home.html', context)
 
         if details['meta-data']['community-profile']['files']['readme']:
             context['readme_present'] = True
-            context['score'] = score_generator(details['repo-link'])
+            score_data = score_generator(details['repo-link'])
+            context['score_data'] = score_data
             profile = customize_profile(details['meta-data']['community-profile'])
             context['profile'] = profile
             context['repo_link'] = details['repo-link']
@@ -52,22 +53,31 @@ def home(request):
     return render(request, 'readme_form/home.html', context)
 
 def detail(request):
-    context = {
-        "usecases" : usecases,
-        "genres" : genres
-    }
     if request.method == "POST":
+        print("\n\n\nReached!!!\n\n\n")
         global details
         details['purpose'] = request.POST.get('purpose')
         details['license-name'] = request.POST.get('license-name')
         details['license-url'] = request.POST.get('license-url')
         details['usecase'] = request.POST.getlist('usecase[]')
         details['genre'] = request.POST.getlist('genre[]')
+        # details['image'] = request.FILES.getlist('images')
+        length = request.POST.get('images-length')
+
+        for i in range(int(length)):
+            print(request.FILES.get('images' + str(i)))
 
         print('\n\nDetails: ' + str(details))
 
         return redirect('installation/')
-    return render(request, 'readme_form/detail.html', context)
+
+        print("\n\nCheck\n\n")
+    else:
+        context = {
+            "usecases" : usecases,
+            "genres" : genres
+        }
+        return render(request, 'readme_form/detail.html', context)
 
 def installation(request):
     if request.method=="POST":
@@ -85,7 +95,7 @@ def usage(request):
     return render(request, 'readme_form/usage.html', {'usage_steps': usage_steps})
 
 def output(request):
-    print(details)
+    # print(details)
     raw_output, html_output = integrate(details, install_steps, usage_steps)
     profile = customize_profile(details['meta-data']['community-profile'])
     context = {

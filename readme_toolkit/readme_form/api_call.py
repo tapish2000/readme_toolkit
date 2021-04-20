@@ -2,6 +2,32 @@ import requests
 import json
 import base64
 import re
+import nltk
+
+nltk.download('wordnet')
+
+from nltk.corpus import wordnet
+
+# Global Variables
+section_score_sheet = {
+    "about" : 8,
+    "description" : 16,
+    "installation" : 16,
+    "usage" : 16,
+    "contributing" : 8,
+    "author" : 12,
+    "dependency" : 14,
+    "license" : 1,
+    "others" : 9
+}
+max_section_score = 100
+max_image_score = 5
+max_url_score = 3
+max_loc_score = 5
+image_weightage = 0.25
+url_weightage = 0.125
+loc_weightage = 0.2
+
 
 def api_call(repo_link):
 
@@ -35,7 +61,7 @@ def api_call(repo_link):
 
     # manipulation of outputs
     out_lang = [o for o in out_lang.keys()]
-    print(out_collab_usernames)
+    # print(out_collab_usernames)
     out_collab_usernames = [o['login'] for o in out_collab_usernames]
 
 
@@ -70,64 +96,6 @@ def parse_loc(readme):
     
     return loc
 
-def evaluate_sections(sections): 
-    score = 0
-    description = ['description','about']
-    installation = ['installation','install','getting started']
-    usage = ['usage','use','how to use']
-    contributing = ['contributing','contribute']
-    author = ['author','authors','special thanks','acknowledgement','acknowledgements','collaborators','owners']
-    dependency = ['dependency','library','libraries','dependencies']
-    licence = ['licence']
-
-    count = 0
-    for d in description:
-        if d in sections:
-            # print(d)
-            count += 1
-            score += 16
-            break
-    for i in installation:
-        if i in sections:
-            # print(i)
-            count += 1
-            score += 16
-            break
-    for u in usage:
-        if u in sections:
-            # print(u)
-            count += 1
-            score += 16
-            break
-    for c in contributing:
-        if c in sections:
-            # print(c)
-            count += 1
-            score += 8
-            break
-    for a in author:
-        if a in sections:
-            # print(a)
-            count += 1
-            score += 12
-            break
-    for d in dependency:
-        if d in sections:
-            # print(d)
-            count += 1
-            score += 14
-            break
-    for l in licence:
-        if l in sections:
-            # print(l)
-            count += 1
-            score += 1
-            break
-    if len(sections)>count:
-        score += min(9,(len(sections)-count))
-    
-    return score
-
 def parse_urls(readme):
     urls = re.findall(r'\[[^][]+]\((https?://[^()]+)\)', readme)
     
@@ -141,15 +109,64 @@ def parse_images(readme):
 
 def parse_sections(readme):
     readme = readme.split('\n')
-    readme = [line.strip() for line in readme if line != '']
+    readme = [line.strip() for line in readme if line.replace(' ', '') != '']
 
     sections = []
 
     for line in readme:
-        if line[0] == '#':
+        if len(line) > 0 and line[0] == '#':
             sections.append(' '.join(line.split(' ')[1:]).lower())
     
     return sections
+
+def evaluate_sections(sections): 
+    score = 0
+
+    template_sections = {
+        "description" : set({'description','about'}),
+        "installation" : set({'installation','install','getting started'}),
+        "usage" : set({'usage','use','how to use'}),
+        "contributing" : set({'contributing','contribute'}),
+        "author" : set({'author','authors','special thanks','acknowledgement','acknowledgements','collaborators','owners'}),
+        "dependency" : set({'dependency','library','libraries','dependencies'}),
+        "license" : set({'license'})
+    }
+
+    # Synonyms for sections defined by us
+    for key, section_list in template_sections.items():
+        synonym = set()
+        for section in section_list:
+            for syn in wordnet.synsets(section):
+                for lemma in syn.lemmas():
+                    synonym.add(lemma.name())
+        template_sections[key].update(synonym)
+    
+    # print(template_sections)
+    # print("\n\n---------------------------------------------------\n\n")
+
+    # Synonyms for sectiosns in user's readme
+    sections_synonyms = set()
+    for section in sections:
+        sections_synonyms.add(section)
+        for s in section:
+            for syn in wordnet.synsets(s):
+                for lemma in syn.lemmas():
+                    sections_synonyms.add(lemma.name())
+    
+    # print(sections_synonyms)
+
+    count = 0
+    score_sheet = section_score_sheet
+    for key, section_set in template_sections.items():
+        for section in section_set:
+            if section in sections_synonyms:
+                count += 1
+                score += score_sheet[key]
+                score_sheet[key] = 0
+    if len(sections) > count:
+        score += min(len(sections) - count, score_sheet['others'])
+    
+    return score
 
 
 def score_generator(repo_link):
@@ -179,38 +196,34 @@ def score_generator(repo_link):
     b64content = out_readme['content']
 
     base64_message = b64content
-    base64_bytes = base64_message.encode('ascii')
+    base64_bytes = base64_message.encode('utf-8')
     message_bytes = base64.b64decode(base64_bytes)
-    readme = message_bytes.decode('ascii')
+    readme = message_bytes.decode('utf-8')
 
     sections = parse_sections(readme)
     images = parse_images(readme)
     urls = parse_urls(readme)
     loc = parse_loc(readme)
 
-    section_score = evaluate_sections(sections)
-    score = section_score + min((images * 0.25), 5) + min((urls * 0.125), 3) + min((loc * 0.2), 5)
+    sections_score = evaluate_sections(sections)
+    images_score = min((images * image_weightage), max_image_score)
+    urls_score = min((urls * url_weightage), max_url_score)
+    loc_score = min((loc * loc_weightage), max_loc_score)
+
+    score = sections_score + images_score + urls_score + loc_score
+    # Converting to percentage
+    score = round((score / (max_section_score + max_image_score + max_url_score + max_loc_score)) * 100, 2)
+
     print(score)
-    '''
-    Score sheet:
-    sections:
-        About: 8
-        Description: 16
-        Installation: 16
-        Usage: 16
-        Contributing: 8
-        Author: 12
-        Dependency: 14
-        license: 1
-        Others: 9
-    images:
-        min((images * 0.25), 5)
-    urls:
-        min((urls * 0.125), 3)
-    loc:
-        min((loc * 0.2), 5)
-    '''
 
+    output = [
+        "score: " + str(score) + "%",
+        "sections: " + str(sections),
+        "images: " + str(images),
+        "urls: " + str(urls),
+        "Lines of Code: " + str(loc)
+    ]
 
+    return output
 
 score_generator('https://github.com/shobhi1310/MedConnect')

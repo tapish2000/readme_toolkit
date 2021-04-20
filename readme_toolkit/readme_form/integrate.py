@@ -34,106 +34,110 @@ def integrate(details, install_steps, usage_steps):
     else:
         readme_text.append(purpose)
         readme_html += (purpose + "  \n")
-    ### Genres
-    readme_html += ("\n")
-    if details['genre'] != ["Other"] and len(details['genre']) > 0:
-        if len(details['genre']) == 1:
-            readme_text.append("This is a " + details['genre'][0] + " project.")
-            readme_html += ("This is a " + details['genre'][0] + " project.\n")
-        else:
-            readme_text.append("The project is based on the following genres: ")
-            readme_html += ("The project is based on the following genres: \n")
-            for genre in details['genre']:
-                if genre != "Other":
-                    readme_text.append("* " + genre)
-                    readme_html += ("* " + genre + "\n")
-                else:
-                    readme_text.append("* And some other genres as well...")
-                    readme_html += ("* And some other genres as well...\n")
-    ### Usecases
-    readme_html += ("\n")
-    if details['usecase'] != ["Other"] and len(details['usecase']) > 0:
-        if len(details['usecase']) == 1:
-            readme_text.append("This project is useful in the " + details['usecase'][0] + " domain.")
-            readme_html += ("This project is useful in the " + details['usecase'][0] + " domain.\n")
-        else:
-            readme_text.append("This project is useful in the following domains: ")
-            readme_html += ("This project is useful in the following domains: \n")
-            for usecase in details['usecase']:
-                if usecase != "Other":
-                    readme_text.append("* " + usecase + " Domain")
-                    readme_html += ("* " + usecase + " Domain\n")
-                else:
-                    readme_text.append("* And some other domains as well...")
-                    readme_html += ("* And some other domains as well...\n")
+    if details['genre']:
+        ### Genres
+        readme_html += ("\n")
+        if details['genre'] != ["Other"] and len(details['genre']) > 0:
+            if len(details['genre']) == 1:
+                readme_text.append("This is a " + details['genre'][0] + " project.")
+                readme_html += ("This is a " + details['genre'][0] + " project.\n")
+            else:
+                readme_text.append("The project is based on the following genres: ")
+                readme_html += ("The project is based on the following genres: \n")
+                for genre in details['genre']:
+                    if genre != "Other":
+                        readme_text.append("* " + genre)
+                        readme_html += ("* " + genre + "\n")
+                    else:
+                        readme_text.append("* And some other genres as well...")
+                        readme_html += ("* And some other genres as well...\n")
+    if details['usecase']:
+        ### Usecases
+        readme_html += ("\n")
+        if details['usecase'] != ["Other"] and len(details['usecase']) > 0:
+            if len(details['usecase']) == 1:
+                readme_text.append("This project is useful in the " + details['usecase'][0] + " domain.")
+                readme_html += ("This project is useful in the " + details['usecase'][0] + " domain.\n")
+            else:
+                readme_text.append("This project is useful in the following domains: ")
+                readme_html += ("This project is useful in the following domains: \n")
+                for usecase in details['usecase']:
+                    if usecase != "Other":
+                        readme_text.append("* " + usecase + " Domain")
+                        readme_html += ("* " + usecase + " Domain\n")
+                    else:
+                        readme_text.append("* And some other domains as well...")
+                        readme_html += ("* And some other domains as well...\n")
     readme_text.append(None)
     readme_html += ("\n")
 
-    # Installation Steps
-    if len(install_steps) != 0:
-        readme_text.append(("## Installation Steps"))
-        readme_html += ("## Installation Steps\n")
-        step_no = 1
-    
-        for step in install_steps:
-            desc = step['description']
-            code = step['code']
-            if desc and code:
-                readme_text.append(str(step_no) + '. ' + desc)
-                readme_html += (str(step_no) + '. ' + desc + "\n")
-                readme_text.append("    ```")
-                readme_html += ("\t```\n")
-                readme_text.append("    " + code)
-                readme_html += ("\t" + code + "\n")
-                readme_text.append("    ```")
-                readme_html += ("\t```\n")
-            else:
-                if desc:
+    if install_steps:
+        # Installation Steps
+        if len(install_steps) != 0:
+            readme_text.append(("## Installation Steps"))
+            readme_html += ("## Installation Steps\n")
+            step_no = 1
+        
+            for step in install_steps:
+                desc = step['description']
+                code = step['code']
+                if desc and code:
                     readme_text.append(str(step_no) + '. ' + desc)
                     readme_html += (str(step_no) + '. ' + desc + "\n")
-                elif code:
-                    readme_text.append(str(step_no) + ".    ```")
-                    readme_html += (str(step_no) + ".\t```\n")
+                    readme_text.append("    ```")
+                    readme_html += ("\t```\n")
                     readme_text.append("    " + code)
                     readme_html += ("\t" + code + "\n")
                     readme_text.append("    ```")
                     readme_html += ("\t```\n")
-            step_no += 1
-        readme_text.append(None)
-        readme_html += ("\n")
+                else:
+                    if desc:
+                        readme_text.append(str(step_no) + '. ' + desc)
+                        readme_html += (str(step_no) + '. ' + desc + "\n")
+                    elif code:
+                        readme_text.append(str(step_no) + ".    ```")
+                        readme_html += (str(step_no) + ".\t```\n")
+                        readme_text.append("    " + code)
+                        readme_html += ("\t" + code + "\n")
+                        readme_text.append("    ```")
+                        readme_html += ("\t```\n")
+                step_no += 1
+            readme_text.append(None)
+            readme_html += ("\n")
 
-    # Usage Steps
-    if len(usage_steps) != 0:
-        readme_text.append("## Usage Steps")
-        readme_html += ("## Usage Steps\n")
-        step_no = 1
+    if usage_steps:
+        # Usage Steps
+        if len(usage_steps) != 0:
+            readme_text.append("## Usage Steps")
+            readme_html += ("## Usage Steps\n")
+            step_no = 1
 
-        for step in usage_steps:
-            desc = step['description']
-            code = step['code']
-            if desc and code:
-                readme_text.append(str(step_no) + '. ' + desc)
-                readme_html += (str(step_no) + '. ' + desc + "\n")
-                readme_text.append("    ```")
-                readme_html += ("\t```\n")
-                readme_text.append("    " + code)
-                readme_html += ("\t" + code + "\n")
-                readme_text.append("    ```")
-                readme_html += ("\t```\n")
-            else:
-                if desc:
+            for step in usage_steps:
+                desc = step['description']
+                code = step['code']
+                if desc and code:
                     readme_text.append(str(step_no) + '. ' + desc)
                     readme_html += (str(step_no) + '. ' + desc + "\n")
-                elif code:
-                    readme_text.append(str(step_no) + ".    ```")
-                    readme_html += (str(step_no) + ".\t```\n")
+                    readme_text.append("    ```")
+                    readme_html += ("\t```\n")
                     readme_text.append("    " + code)
                     readme_html += ("\t" + code + "\n")
                     readme_text.append("    ```")
                     readme_html += ("\t```\n")
-            step_no += 1
-        readme_text.append(None)
-        readme_html += ("\n")
+                else:
+                    if desc:
+                        readme_text.append(str(step_no) + '. ' + desc)
+                        readme_html += (str(step_no) + '. ' + desc + "\n")
+                    elif code:
+                        readme_text.append(str(step_no) + ".    ```")
+                        readme_html += (str(step_no) + ".\t```\n")
+                        readme_text.append("    " + code)
+                        readme_html += ("\t" + code + "\n")
+                        readme_text.append("    ```")
+                        readme_html += ("\t```\n")
+                step_no += 1
+            readme_text.append(None)
+            readme_html += ("\n")
 
     # Authors and Acknowledgement
     readme_text.append("## Authors and Acknowledgement")
@@ -154,6 +158,16 @@ def integrate(details, install_steps, usage_steps):
     readme_html += ("First fork this repo then clone it into your system. Pull requests are welcome. For major changes, please open an \
     # issue first to discuss what you would like to change.\n\n")
     readme_text.append(None)
+
+    if details['license-name'] and details['license-url']:
+        # License
+        if not details['license-name']:
+            details['license-name'] = details['license-url']
+        readme_text.append("## License")
+        readme_html += ("## License\n")
+        readme_text.append("Licensing under [" + details['license-name'] + "](" + details['license-url'] + ")")
+        readme_html += ("Licensing under [" + details['license-name'] + "](" + details['license-url'] + ")\n\n")
+        readme_text.append(None)
 
     # Basic markdown syntax to use
     readme_text.append("<!-- BASIC SYNTAX OF MARKDOWN FOR YOU TO USE -->")
