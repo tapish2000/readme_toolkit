@@ -10,6 +10,10 @@
             {% endfor %}
         </div>
     </div>
+    {% comment %} <div class="mb-3">
+        <label>If you want to add images to your README, you can do it here: </label>
+        <input type="file" multiple>
+    </div> {% endcomment %}
     <div class="row">
         <div class="col-sm-6" style="text-align: left">
             <a href="output_README.md" download>
@@ -51,6 +55,7 @@
     </div>
 
     <script>
+        
         function toggle(option) {
             if (option == 1) {
                 document.getElementsByClassName('raw')[0].style.display = 'none';

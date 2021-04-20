@@ -53,8 +53,11 @@ def home(request):
     return render(request, 'readme_form/home.html', context)
 
 def detail(request):
+    context = {
+        "usecases" : usecases,
+        "genres" : genres
+    }
     if request.method == "POST":
-        print("\n\n\nReached!!!\n\n\n")
         global details
         details['purpose'] = request.POST.get('purpose')
         details['license-name'] = request.POST.get('license-name')
@@ -62,22 +65,16 @@ def detail(request):
         details['usecase'] = request.POST.getlist('usecase[]')
         details['genre'] = request.POST.getlist('genre[]')
         # details['image'] = request.FILES.getlist('images')
-        length = request.POST.get('images-length')
+        # length = request.POST.get('images-length')
 
-        for i in range(int(length)):
-            print(request.FILES.get('images' + str(i)))
+        # for i in range(int(length)):
+        #     print(request.FILES.get('images' + str(i)))
 
         print('\n\nDetails: ' + str(details))
 
         return redirect('installation/')
-
-        print("\n\nCheck\n\n")
-    else:
-        context = {
-            "usecases" : usecases,
-            "genres" : genres
-        }
-        return render(request, 'readme_form/detail.html', context)
+    
+    return render(request, 'readme_form/detail.html', context)
 
 def installation(request):
     if request.method=="POST":
