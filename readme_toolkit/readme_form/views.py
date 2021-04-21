@@ -3,6 +3,8 @@ from django.http import FileResponse
 from readme_form.api_call import *
 from readme_form.integrate import *
 import os
+import cloudinary
+import cloudinary.uploader
 
 install_steps = []
 usage_steps = []
@@ -64,11 +66,7 @@ def detail(request):
         details['license-url'] = request.POST.get('license-url')
         details['usecase'] = request.POST.getlist('usecase[]')
         details['genre'] = request.POST.getlist('genre[]')
-        # details['image'] = request.FILES.getlist('images')
-        # length = request.POST.get('images-length')
-
-        # for i in range(int(length)):
-        #     print(request.FILES.get('images' + str(i)))
+        details['images'] = None
 
         print('\n\nDetails: ' + str(details))
 
@@ -92,7 +90,23 @@ def usage(request):
     return render(request, 'readme_form/usage.html', {'usage_steps': usage_steps})
 
 def output(request):
-    # print(details)
+    if request.method == 'POST':
+        global details
+        length = request.POST.get('images-length')
+        images = []
+        for i in range(int(length)):
+            images.append(cloudinary.uploader.upload(request.FILES.get('images' + str(i)))['url'])
+        print(images)
+        details['images'] = images
+        raw_output, html_output = integrate(details, install_steps, usage_steps)
+        profile = customize_profile(details['meta-data']['community-profile'])
+        context = {
+            "raw_output" : raw_output,
+            "profile" : profile,
+            "html_output" : html_output
+        }
+        # return render(request, 'readme_form/output.html', context)
+
     raw_output, html_output = integrate(details, install_steps, usage_steps)
     profile = customize_profile(details['meta-data']['community-profile'])
     context = {

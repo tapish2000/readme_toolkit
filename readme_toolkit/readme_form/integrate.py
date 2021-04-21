@@ -68,6 +68,12 @@ def integrate(details, install_steps, usage_steps):
                     else:
                         readme_text.append("* And some other domains as well...")
                         readme_html += ("* And some other domains as well...\n")
+    if details['images']:
+        ### Images
+        readme_html += ("\n")
+        for image_url in details['images']:
+            readme_text.append("![Image](" + image_url + ")")
+            readme_html += ("![Image](" + image_url + ")\n")
     readme_text.append(None)
     readme_html += ("\n")
 

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import json
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,8 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 keys = {}
-with open('config.json', 'r') as config:
-    keys = json.load(config)
+config = open('config.json', 'r')
+keys = json.load(config)
+
 SECRET_KEY = keys["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -124,3 +128,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+cloudinary.config( 
+  cloud_name = keys['CLOUDINARY_CLOUD_NAME'], 
+  api_key = keys['CLOUDINARY_API_KEY'], 
+  api_secret = keys['CLOUDINARY_API_SECRET']
+)
