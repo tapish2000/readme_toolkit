@@ -27,19 +27,23 @@
     </form>
 
     {% if readme_present %}
-    <div class="alert alert-info text-center" role="alert">
-        <h3>Repository Analysis Report</h3>
-        {% for each in profile %}
-            <p>{{ each }}</p>
-        {% endfor %}
-        <h3>README Analysis Report</h3>
-        {% for each in score_data %}
-            <p>{{ each }}</p>
-        {% endfor %}
-    </div>
-    <pre>
-        Are you satisfied with this score? (If not, then you can proceed to fill some details out...)     <a class="btn btn-outline-info" type="button" href = {% url 'readme-detail' %}>Proceed</a>
-    </pre>
+        {% if score >= 15 %}    
+            <div class="alert alert-info text-center" role="alert">
+        {% else %}
+            <div class="alert alert-danger text-center" role="alert">
+        {% endif %}
+                <h3>Repository Analysis Report</h3>
+                {% for each in profile %}
+                    <p>{{ each }}</p>
+                {% endfor %}
+                <h3>README Analysis Report</h3>
+                {% for each in score_data %}
+                    <p>{{ each }}</p>
+                {% endfor %}
+            </div>
+            <pre>
+                Are you satisfied with this score? (If not, then you can proceed to fill some details out...)     <a class="btn btn-outline-info" type="button" href = {% url 'readme-detail' %}>Proceed</a>
+            </pre>
     {% endif %}
 
     <script>

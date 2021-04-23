@@ -6,24 +6,18 @@ The major purpose of this project is to make non commercial web and android app 
 
 The project is based on the following genres: 
 * Frontend Development
-* Backend Development
 * Mobile App Development
-* Database
-* Software
+* Data Visualization
 
 This project is useful in the following domains: 
-* Businesses Domain
 * Social Welfare Domain
 * Health Domain
 
-![Image](http://res.cloudinary.com/tapcloud/image/upload/v1618986132/zbicfh1fsaycuzaekj0j.jpg)
+![Image](http://res.cloudinary.com/tapcloud/image/upload/v1619170429/unrt2ezbitpsftpwuhyc.webp)
+![Image](http://res.cloudinary.com/tapcloud/image/upload/v1619170430/qsp2n0pq5ofa0v8ksyca.jpg)
 
 ## Installation Steps
 1. Run the frontend
-	```
-	npm start
-	```
-2. Run the frontend
 	```
 	npm start
 	```

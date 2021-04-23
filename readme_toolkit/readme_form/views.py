@@ -45,7 +45,9 @@ def home(request):
 
         if details['meta-data']['community-profile']['files']['readme']:
             context['readme_present'] = True
-            score_data = score_generator(details['repo-link'])
+            score_data, score = score_generator(details['repo-link'])
+            print(score, score_data[0])
+            context['score'] = score
             context['score_data'] = score_data
             profile = customize_profile(details['meta-data']['community-profile'])
             context['profile'] = profile

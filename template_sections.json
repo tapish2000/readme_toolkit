@@ -1,0 +1,9 @@
+{
+    "description": ["well-nigh", "feature_film", "description", "about", "features", "feature", "feature_article", "characteristic", "characteristics", "boast", "lineament", "feature_of_speech", "verbal_description"],
+    "installation": ["initiation", "establish", "installation", "install", "installment", "instalment", "installing", "set_up", "induction", "facility", "instal", "put_in", "getting started"],
+    "usage": ["utilization", "use_of_goods_and_services", "enjoyment", "expend", "economic_consumption", "practice", "use", "exercise", "utilise", "how to use", "apply", "purpose", "custom", "habituate", "utilize", "utilisation", "manipulation", "usance", "usage", "consumption", "employment", "employ", "habit", "function", "role"],
+    "contributing": ["lead", "add", "kick_in", "contributive", "chip_in", "conduce", "conducive", "contributing", "impart", "put_up", "tributary", "contributory", "bestow", "give", "contribute"],
+    "author": ["cooperator", "recognition", "author", "acknowledgement", "special thanks", "source", "collaborationist", "authors", "generator", "writer", "owner", "proprietor", "acknowledgment", "pardner", "quisling", "partner_in_crime", "collaborator", "henchman", "acknowledgements", "collaborators", "possessor", "owners", "confederate", "partner"],
+    "dependency": ["dependence", "dependency", "program_library", "depository_library", "habituation", "dependance", "addiction", "libraries", "library", "dependencies"],
+    "license": ["licence", "permission", "license", "permit", "certify"]
+}

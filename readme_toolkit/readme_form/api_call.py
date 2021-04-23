@@ -3,6 +3,7 @@ import json
 import base64
 import re
 import nltk
+from monkeylearn import MonkeyLearn
 
 nltk.download('wordnet')
 
@@ -27,6 +28,11 @@ max_loc_score = 5
 image_weightage = 0.25
 url_weightage = 0.125
 loc_weightage = 0.2
+similarity_threshold = 0.4
+
+keys = {}
+with open('config.json', 'r') as config:
+    keys = json.load(config)
 
 
 def api_call(repo_link):
@@ -34,10 +40,6 @@ def api_call(repo_link):
     username = repo_link.split('/')[-2]
 
     # from https://github.com/user/settings/tokens
-    keys = {}
-    with open('config.json', 'r') as config:
-        keys = json.load(config)
-    
     token = keys["GITHUB_TOKEN"]
 
     repo = repo_link.split('/')[-1]
@@ -79,6 +81,20 @@ def api_call(repo_link):
 
     return data
 
+def similarity_index(word, words):
+    temp = []
+
+    for word1 in words:
+        if word == word1:
+            return 1
+        wordnet1 = wordnet.synsets(word)
+        wordnet2 = wordnet.synsets(word1)
+        if wordnet1 and wordnet2:               # Check if both are non-empty
+            temp.append(wordnet1[0].wup_similarity(wordnet2[0]))
+    if temp:
+        return max(temp)
+    return 0
+
 def parse_loc(readme):
     readme = readme.split('\n')
     readme = [line.strip() for line in readme if line != '']
@@ -106,6 +122,18 @@ def parse_images(readme):
     
     return len(images)
 
+def parse_sections_content(readme):
+    readme = readme.split('#')
+    readme = [line.strip() for line in readme if line.replace(' ', '') != '']
+
+    content = []
+
+    for line in readme:
+        line = line.replace('\n', ' ')
+        if len(line) > 0:
+            content.append(line)
+
+    return content
 
 def parse_sections(readme):
     readme = readme.split('\n')
@@ -119,53 +147,60 @@ def parse_sections(readme):
     
     return sections
 
-def evaluate_sections(sections): 
+def evaluate_content(content):
+    # MonkeyLearn Setup
+    ml = MonkeyLearn(keys['MONKEYLEARN_API_KEY'])
+    model_id = keys['MONKEYLEARN_MODEL_ID']
+
+    response = ml.classifiers.classify(model_id, content)
+
+    return set(res['classifications'][0]['tag_name'] for res in response.body)
+
+def evaluate_sections(sections, content, repo_name):
     score = 0
 
-    template_sections = {
-        "description" : set({'description','about'}),
-        "installation" : set({'installation','install','getting started'}),
-        "usage" : set({'usage','use','how to use'}),
-        "contributing" : set({'contributing','contribute'}),
-        "author" : set({'author','authors','special thanks','acknowledgement','acknowledgements','collaborators','owners'}),
-        "dependency" : set({'dependency','library','libraries','dependencies'}),
-        "license" : set({'license'})
-    }
-
-    # Synonyms for sections defined by us
-    for key, section_list in template_sections.items():
-        synonym = set()
-        for section in section_list:
-            for syn in wordnet.synsets(section):
-                for lemma in syn.lemmas():
-                    synonym.add(lemma.name())
-        template_sections[key].update(synonym)
+    template_sections = {}
+    with open('template_sections.json', 'r') as datafile:
+        template_sections = json.load(datafile)
     
-    # print(template_sections)
-    # print("\n\n---------------------------------------------------\n\n")
+    # Add synonyms of repo name in the template sections
+    template_sections['description'].append(repo_name)
+    for syn in wordnet.synsets(repo_name):
+        for lemma in syn.lemmas():
+            template_sections['description'].append(lemma.name())
 
     # Synonyms for sectiosns in user's readme
+    print(sections)
     sections_synonyms = set()
     for section in sections:
         sections_synonyms.add(section)
-        for s in section:
-            for syn in wordnet.synsets(s):
-                for lemma in syn.lemmas():
-                    sections_synonyms.add(lemma.name())
+        for syn in wordnet.synsets(section):
+            for lemma in syn.lemmas():
+                sections_synonyms.add(lemma.name())
     
-    # print(sections_synonyms)
+    # Tag names from the content
+    tag_names = evaluate_content(content)
+    
+    print(template_sections)
+    print("-"*15)
+    print(sections_synonyms)
+    print("-"*15)
+    print(tag_names)
 
-    count = 0
+    count = 0                                           # To count how many headings are matched
     score_sheet = section_score_sheet
     for key, section_set in template_sections.items():
         for section in section_set:
-            if section in sections_synonyms:
-                count += 1
-                score += score_sheet[key]
-                score_sheet[key] = 0
+            if score_sheet[key]:
+                if (similarity_index(section, list(sections_synonyms)) >= similarity_threshold
+                    or similarity_index(section, list(tag_names)) >= similarity_threshold):        # If headings' synonyms match directly
+                    count += 1
+                    score += score_sheet[key]
+                    score_sheet[key] = 0
+
     if len(sections) > count:
         score += min(len(sections) - count, score_sheet['others'])
-    
+
     return score
 
 
@@ -201,11 +236,12 @@ def score_generator(repo_link):
     readme = message_bytes.decode('utf-8')
 
     sections = parse_sections(readme)
+    section_content = parse_sections_content(readme)
     images = parse_images(readme)
     urls = parse_urls(readme)
     loc = parse_loc(readme)
 
-    sections_score = evaluate_sections(sections)
+    sections_score = evaluate_sections(sections, section_content, repo)
     images_score = min((images * image_weightage), max_image_score)
     urls_score = min((urls * url_weightage), max_url_score)
     loc_score = min((loc * loc_weightage), max_loc_score)
@@ -224,6 +260,7 @@ def score_generator(repo_link):
         "Lines of Code: " + str(loc)
     ]
 
-    return output
+    return output, score
 
-score_generator('https://github.com/shobhi1310/MedConnect')
+score_generator('https://github.com/tapish2000/readme-toolkit')
+# similarity_index('about', ['Health & Medicine', 'Computers & Internet', 'Health & Medicine', 'Consumer Electronics', 'Travel', 'Computers & Internet', 'Computers & Internet'])
