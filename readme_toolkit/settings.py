@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 keys = {}
-config = open('config.json', 'r')
+config = open(str(BASE_DIR) + '/config.json', 'r')
 keys = json.load(config)
 
 SECRET_KEY = keys["DJANGO_SECRET_KEY"]

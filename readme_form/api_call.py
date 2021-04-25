@@ -8,6 +8,7 @@ from monkeylearn import MonkeyLearn
 nltk.download('wordnet')
 
 from nltk.corpus import wordnet
+import readme_toolkit.settings as settings
 
 # Global Variables
 section_score_sheet = {
@@ -31,7 +32,7 @@ loc_weightage = 0.2
 similarity_threshold = 0.4
 
 keys = {}
-with open('config.json', 'r') as config:
+with open(str(settings.BASE_DIR) + '/config.json', 'r') as config:
     keys = json.load(config)
 
 
@@ -207,11 +208,6 @@ def evaluate_sections(sections, content, repo_name):
 def score_generator(repo_link):
     # url = 'http://readme-score-api.herokuapp.com/score.json?url={}&human_breakdown=false&force=false'.format()
     username = repo_link.split('/')[-2]
-
-    # from https://github.com/user/settings/tokens
-    keys = {}
-    with open('config.json', 'r') as config:
-        keys = json.load(config)
     
     token = keys["GITHUB_TOKEN"]
 
