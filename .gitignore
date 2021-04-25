@@ -4,6 +4,6 @@ readme
 output_readme.md
 venv
 config.json
-Analysis/__pycache__
-readme_toolkit/readme_form/__pycache__
-readme_toolkit/readme_toolkit/__pycache__
+readme_form/__pycache__
+readme_toolkit/__pycache__
+readme_form/migrations/__pycache__
