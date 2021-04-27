@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python readme_toolkit/manage.py test
+        python manage.py test
