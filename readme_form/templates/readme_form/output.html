@@ -18,9 +18,10 @@
     </div>
     <div class="row">
         <div class="col-sm-6" style="text-align: left">
-            <a href="output_README.md" download>
+            <a href="{% url 'readme-download' %}" download>
                 <button class="btn btn-primary"> Download </button>
             </a>
+            <button class="btn btn-primary" onclick="myFunction()"> Copy to Clipboard </button>
         </div>
         <div class="col-sm-6" style="text-align: right">
             <input type="radio" class="btn-check" name="output-options" id="raw-output" onclick="toggle(0)" autocomplete="off" checked>
@@ -32,7 +33,7 @@
     </div>
     <div class="row">
         <div class="card raw">
-            <div class="card-body">
+            <div class="card-body" id="output">
                 {% for line in raw_output %}
                     {% if line %}
                         <p>{{ line }}</p>
@@ -125,6 +126,20 @@
                 document.getElementById('save-btn').style.display = 'none';
                 document.getElementById('save-clicked').style.display = '';
             }
+        }
+
+        function myFunction() {
+            console.log("Clicked!!!!")
+            /* Get the text field */
+            var range = document.createRange();
+            range.selectNode(document.getElementById("output"));
+            window.getSelection().removeAllRanges(); // clear current selection
+            window.getSelection().addRange(range); // to select text
+            /* Copy the text inside the text field */
+            document.execCommand('copy')
+            window.getSelection().removeAllRanges();// to deselect
+            /* Alert the copied text */
+            alert("Text copied to CLip Board");
         }
     </script>
 
