@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import FileResponse
+from django.views.static import serve 
 from readme_form.api_call import *
 from readme_form.integrate import *
 import os
@@ -117,9 +118,6 @@ def output(request):
     return render(request, 'readme_form/output.html', context)
 
 def download(request):
-    filename = 'output_README.md'
-    readme_f = open(filename, 'r')
-    response = FileResponse(readme_f.read(), content_type='file/markdown')
-    response['Content-Length'] = os.path.getsize(filename)
-    response['Content-Disposition'] = "attachment; filename=%s" % filename
-    return response
+    dir_path = os.path.dirname(__file__)
+    filepath = dir_path + '/readme/output_README.md'
+    return serve(request, os.path.basename(filepath),os.path.dirname(filepath))

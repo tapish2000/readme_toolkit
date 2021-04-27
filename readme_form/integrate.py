@@ -4,6 +4,7 @@ and asks user for the various granular questions.
 
 '''
 import markdown
+import os
 
 def integrate(details, install_steps, usage_steps):
     readme_text = []
@@ -187,7 +188,9 @@ def integrate(details, install_steps, usage_steps):
     readme_text.append("<!-- ![alt_name](link/source of image): For displaying image -->")
     readme_text.append(None)
 
-    output_file = open("readme_toolkit/readme_form/templates/readme_form/output_README.md", "w")
+    dir_path = os.path.dirname(__file__)
+    filepath = dir_path + '/readme/output_README.md'
+    output_file = open(filepath, "w")
     output_file.write(readme_html)
     output_file.close()
 
