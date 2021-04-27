@@ -151,6 +151,8 @@ def integrate(details, install_steps, usage_steps):
     readme_text.append("The following are the collaborators of the project:  ")
     readme_html += ("The following are the collaborators of the project:  \n")
     for collaborator in details['meta-data']['collaborators']:
+        if not collaborator['name']:
+            collaborator['name'] = collaborator['username']
         readme_text.append("- [" + collaborator['name'] + "](https://github.com/" + collaborator['username'] + ")  ")
         readme_html += ("- [" + collaborator['name'] + "](https://github.com/" + collaborator['username'] + ")  \n")
     readme_text.append(None)

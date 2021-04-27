@@ -26,10 +26,11 @@ genres = [
 ]
 
 def home(request):
-    context = {
-        "readme_present" : False,
-        "error" : False
-    }
+    context = dict()
+
+    context["readme_present"] = False
+    context["error"] = False
+
     if request.method == "POST":
         global details
         details = {
@@ -104,16 +105,13 @@ def output(request):
         profile = customize_profile(details['meta-data']['community-profile'])
         context = {
             "raw_output" : raw_output,
-            "profile" : profile,
             "html_output" : html_output
         }
-        # return render(request, 'readme_form/output.html', context)
 
     raw_output, html_output = integrate(details, install_steps, usage_steps)
     profile = customize_profile(details['meta-data']['community-profile'])
     context = {
         "raw_output" : raw_output,
-        "profile" : profile,
         "html_output" : html_output
     }
     return render(request, 'readme_form/output.html', context)

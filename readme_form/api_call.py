@@ -22,14 +22,16 @@ section_score_sheet = {
     "license" : 1,
     "others" : 9
 }
+max_length_score = 10
 max_section_score = 100
 max_image_score = 5
 max_url_score = 3
 max_loc_score = 5
-image_weightage = 0.25
-url_weightage = 0.125
-loc_weightage = 0.2
-similarity_threshold = 0.4
+length_weightage = 0.005
+image_weightage = 0.3
+url_weightage = 0.15
+loc_weightage = 0.25
+similarity_threshold = 0.35
 
 keys = {}
 with open(str(settings.BASE_DIR) + '/config.json', 'r') as config:
@@ -148,6 +150,9 @@ def parse_sections(readme):
     
     return sections
 
+def get_length(readme):
+    return len(readme)
+
 def evaluate_content(content):
     # MonkeyLearn Setup
     ml = MonkeyLearn(keys['MONKEYLEARN_API_KEY'])
@@ -161,7 +166,7 @@ def evaluate_sections(sections, content, repo_name):
     score = 0
 
     template_sections = {}
-    with open('template_sections.json', 'r') as datafile:
+    with open(str(settings.BASE_DIR) + '/template_sections.json', 'r') as datafile:
         template_sections = json.load(datafile)
     
     # Add synonyms of repo name in the template sections
@@ -231,20 +236,22 @@ def score_generator(repo_link):
     message_bytes = base64.b64decode(base64_bytes)
     readme = message_bytes.decode('utf-8')
 
+    length = get_length(readme)
     sections = parse_sections(readme)
     section_content = parse_sections_content(readme)
     images = parse_images(readme)
     urls = parse_urls(readme)
     loc = parse_loc(readme)
 
+    length_score = min((length * length_weightage), max_length_score)
     sections_score = evaluate_sections(sections, section_content, repo)
     images_score = min((images * image_weightage), max_image_score)
     urls_score = min((urls * url_weightage), max_url_score)
     loc_score = min((loc * loc_weightage), max_loc_score)
 
-    score = sections_score + images_score + urls_score + loc_score
+    score = length_score + sections_score + images_score + urls_score + loc_score
     # Converting to percentage
-    score = round((score / (max_section_score + max_image_score + max_url_score + max_loc_score)) * 100, 2)
+    score = round((score / (max_length_score + max_section_score + max_image_score + max_url_score + max_loc_score)) * 100, 2)
 
     print(score)
 
@@ -258,5 +265,4 @@ def score_generator(repo_link):
 
     return output, score
 
-score_generator('https://github.com/tapish2000/readme-toolkit')
-# similarity_index('about', ['Health & Medicine', 'Computers & Internet', 'Health & Medicine', 'Consumer Electronics', 'Travel', 'Computers & Internet', 'Computers & Internet'])
+# score_generator('https://github.com/tapish2000/readme-toolkit')
