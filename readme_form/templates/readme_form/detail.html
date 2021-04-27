@@ -1,10 +1,10 @@
 {% extends "readme_form/base.html" %}
 {% block content %}
-    <form class="basic-info" method="POST" action=".">{% csrf_token %}
-        <div class="mb-3">
+    <form class="basic-info" method="POST", action=".">{% csrf_token %}
+        <div class="mb-3" method="post" action=".">
             <label for="purpose" class="form-label">Purpose of the Project</label>
             <input type="text" class="form-control" name="purpose" required
-            placeholder="Write a complete meaningful sentence...">
+            placeholder="Write a complete meaningful sentence..." autofocus>
         </div>
         <div class="mb-3">
             <label for="audience" class="form-label">Target Audience</label>  
@@ -39,14 +39,14 @@
                     <label for="license-name" class="form-label">Name</label>
                 </div>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" name="license-name">
+                    <input type="text" class="form-control" id="license-name" onchange="licenseAdded(this)" name="license-name">
                 </div>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-1">
                     <label for="license-url" class="form-label">URL</label>
                 </div>
                 <div class="col-sm-6">
-                    <input type="url" class="form-control" name="license-url">
+                    <input type="url" class="form-control" id="license-url" name="license-url">
                 </div>
             </div>
         </div>
@@ -58,9 +58,20 @@
     </form>
 
     <script>
+        
+        function licenseAdded(licenseName) {
+            var licenseUrl = document.getElementById('license-url');
+            console.log(licenseName.value);
+            if (licenseName.value === "") {
+                licenseUrl.required = false;
+            }
+            else {
+                licenseUrl.required = true;
+            }
+        }
+
         function loading() {
             var form = document.getElementsByClassName('basic-info');
-            console.log(form[0].checkValidity());
             if (form[0].checkValidity() == true) {
                 document.getElementById('next-normal').style.display = 'none';
                 document.getElementById('next-clicked').style.display = 'block';

@@ -4,6 +4,8 @@ from django.views.static import serve
 from readme_form.api_call import *
 from readme_form.integrate import *
 import os
+import cloudinary
+import cloudinary.uploader
 
 install_steps = []
 usage_steps = []
@@ -25,10 +27,11 @@ genres = [
 ]
 
 def home(request):
-    context = {
-        "readme_present" : False,
-        "error" : False
-    }
+    context = dict()
+
+    context["readme_present"] = False
+    context["error"] = False
+
     if request.method == "POST":
         global details
         details = {
@@ -38,13 +41,16 @@ def home(request):
         try:
             details['meta-data'] = api_call(details['repo-link'])
         except:
-            print("Unable to access github API")
+            print("ERROR: Unable to access github API")
             context['error'] = True
             return render(request, 'readme_form/home.html', context)
 
         if details['meta-data']['community-profile']['files']['readme']:
             context['readme_present'] = True
-            context['score'] = score_generator(details['repo-link'])
+            score_data, score = score_generator(details['repo-link'])
+            print(score, score_data[0])
+            context['score'] = score
+            context['score_data'] = score_data
             profile = customize_profile(details['meta-data']['community-profile'])
             context['profile'] = profile
             context['repo_link'] = details['repo-link']
@@ -64,10 +70,12 @@ def detail(request):
         details['license-url'] = request.POST.get('license-url')
         details['usecase'] = request.POST.getlist('usecase[]')
         details['genre'] = request.POST.getlist('genre[]')
+        details['images'] = None
 
         print('\n\nDetails: ' + str(details))
 
         return redirect('installation/')
+    
     return render(request, 'readme_form/detail.html', context)
 
 def installation(request):
@@ -86,12 +94,25 @@ def usage(request):
     return render(request, 'readme_form/usage.html', {'usage_steps': usage_steps})
 
 def output(request):
-    print(details)
+    if request.method == 'POST':
+        global details
+        length = request.POST.get('images-length')
+        images = []
+        for i in range(int(length)):
+            images.append(cloudinary.uploader.upload(request.FILES.get('images' + str(i)))['url'])
+        print(images)
+        details['images'] = images
+        raw_output, html_output = integrate(details, install_steps, usage_steps)
+        profile = customize_profile(details['meta-data']['community-profile'])
+        context = {
+            "raw_output" : raw_output,
+            "html_output" : html_output
+        }
+
     raw_output, html_output = integrate(details, install_steps, usage_steps)
     profile = customize_profile(details['meta-data']['community-profile'])
     context = {
         "raw_output" : raw_output,
-        "profile" : profile,
         "html_output" : html_output
     }
     return render(request, 'readme_form/output.html', context)

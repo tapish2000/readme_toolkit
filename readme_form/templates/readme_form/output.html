@@ -1,0 +1,131 @@
+{% extends "readme_form/base.html" %}
+{% block content %}
+
+    <h2 style="text-align: center">Output</h2>
+    <div class="mb-3">
+        <input type="file" multiple required>
+        <div class="row center-block">
+            <p>If you want to add images to your README, you can do it here: 
+                <span class="pull-right">
+                    <button type="button" id="save-btn" class="btn btn-primary btn-small" onclick="loading()">Save</button>
+                    <button class="btn btn-primary btn-small" id="save-clicked" type="button" disabled style="display: none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                </span>
+            </p>     
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" style="text-align: left">
+            <a href="output_README.md" download>
+                <button class="btn btn-primary"> Download </button>
+            </a>
+        </div>
+        <div class="col-sm-6" style="text-align: right">
+            <input type="radio" class="btn-check" name="output-options" id="raw-output" onclick="toggle(0)" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="raw-output">Raw Format</label>
+
+            <input type="radio" class="btn-check" name="output-options" id="html-output" onclick="toggle(1)" autocomplete="off">
+            <label class="btn btn-outline-info" for="html-output">Markdown Format</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card raw">
+            <div class="card-body">
+                {% for line in raw_output %}
+                    {% if line %}
+                        <p>{{ line }}</p>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card html" style="display: none">
+            <div class="card-body">
+                {% for line in html_output %}
+                    {% if line %}
+                        {{ line|safe }}
+                        <br>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var images = [];
+        // Post Request 
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputElement = document.querySelector('input[type="file"]');
+            const pond = FilePond.create( inputElement, {
+                onaddfile: (err, fileItem) => {
+                    images.push(fileItem.file)
+                    console.log(images)
+                },
+                onremovefile: (err, fileItem) => {
+                    const index = images.indexOf(fileItem.file);
+                    if (index >= 0) {
+                        images.splice(index, 1);
+                    }
+                    console.log(images);
+                }
+            } );
+
+            var formData = new FormData;
+            $(document).on('click', '#save-btn', function(e) {
+                formData.append('images-length', images.length);
+                for (var i = 0; i < images.length; i++) {
+                    formData.append('images' + i, images[i]);
+                }
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                if (images.length == 0) {
+                    alert("No image uploaded!");
+                    window.location.reload();
+                }
+                else {
+                    $.ajax({
+                        type: 'POST',
+                        data: formData,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        success: function() {
+                            console.log("Success");
+                            window.location.reload();
+                        },
+                        error: function(xhr, errmsg, err) {
+                            console.log(xhr.status + ': ' + xhr.responseText);
+                        }
+                    })
+                }
+            })
+        })
+
+        function toggle(option) {
+            if (option == 1) {
+                document.getElementsByClassName('raw')[0].style.display = 'none';
+                document.getElementsByClassName('html')[0].style.display = 'block';
+            }
+            else {
+                document.getElementsByClassName('raw')[0].style.display = 'block';
+                document.getElementsByClassName('html')[0].style.display = 'none';
+            }
+        }
+
+        function loading() {
+            const inputElement = document.querySelector('input[type="file"]'); 
+            const pond = FilePond.create( inputElement );
+
+            if (images.length > 0) {
+                document.getElementById('save-btn').style.display = 'none';
+                document.getElementById('save-clicked').style.display = '';
+            }
+        }
+    </script>
+
+{% endblock content %}
